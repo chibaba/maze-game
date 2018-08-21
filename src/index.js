@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import './App.css';
 
 class Square extends React.Component {
   render() {
     return (
       <button className="square" onClick={() => this.props.onClick()}>
-        <img src={this.props.element} style={{ display: this.props.display }} />
+        <img src={this.props.element} alt="" style={{ display: this.props.display }} />
       </button>
     );
   }
@@ -30,12 +30,12 @@ class Board extends React.Component {
 
   componentDidUpdate() {
     setTimeout(() => {
-      this.checkForMaze();
-    }, 100);
+      this.checkForMazes();
+    }, 200);
   }
 
   handleClick(i) {
-    if (i === this.state.actorLocation) this.checkForMaze();
+    if (i === this.state.actorLocation) this.checkForMazes();
   }
 
   moveY(direction) {
@@ -164,7 +164,7 @@ class Board extends React.Component {
       }
 
     }
-    console.log('Actor Range: ', actorRange);
+    console.log('ActorRange: ', actorRange);
     return actorRange
   }
 
@@ -173,7 +173,7 @@ class Board extends React.Component {
   }
 
   decideMove(mazeLocations) {
-    console.log('Enemy Locations: ', mazeLocations);
+    console.log('Maze Locations: ', mazeLocations);
     let distance = Math.abs(
       mazeLocations[0] - this.state.actorLocation
     );
@@ -186,7 +186,7 @@ class Board extends React.Component {
       this.moveX('-');
     } else if (
       distance < this.props.width
-      && enemyLocations[0] < this.state.actorLocation
+      && mazeLocations[0] < this.state.actorLocation
       && !this.numberInRange(mazeLocations[0], actorRange)
     ) {
       this.moveY('+');
@@ -198,8 +198,8 @@ class Board extends React.Component {
       this.moveX('+');
     } else if (
       distance < this.props.width
-      && enemyLocations[0] > this.state.actorLocation
-      && !this.numberInRange(enemyLocations[0], actorRange)
+      && mazeLocations[0] > this.state.actorLocation
+      && !this.numberInRange(mazeLocations[0], actorRange)
     ) {
       this.moveY('-');
     } else if (
@@ -212,16 +212,16 @@ class Board extends React.Component {
     }
   }
 
-  checkForEnemies() {
-    console.log('checking for maze: ', this.state);
-    let maze = this.state.squares.filter(square => {
+  checkForMazes() {
+    console.log('checking for mazes: ', this.state);
+    let mazes = this.state.squares.filter(square => {
       return square.element === 'maze.png';
     });
-    console.log('Total maze: ', maze);
-    if (enemies.length === 0) {
+    console.log('Total mazes: ', mazes);
+    if (mazes.length === 0) {
       alert('Game over. Total maze gotten: ' + this.state.moves);
     } else {
-      this.decideMove(maze.map((enemy) => maze.value));
+      this.decideMove(mazes.map((maze) => maze.value));
     }
   }
 
@@ -233,9 +233,11 @@ class Board extends React.Component {
   }
 
   renderRows(squares) {
-    return (<div className="board-row">
-      {squares}
-    </div>);
+    return (
+    <div className ="board-row">
+     {squares}
+    </div>
+    );
   }
 
   renderBoard() {
@@ -268,7 +270,7 @@ class Board extends React.Component {
       let squareNumber = 0;
       for (let i = 0; i < this.props.height; i++) {
         for (let j = 0; j < this.props.width; j++) {
-          let element = squareNumber === this.state.marioLocation ? "actor.png" : luckySquares.includes(squareNumber) ? "maze.png" : "";
+          let element = squareNumber === this.state.actorLocation ? "actor.png" : luckySquares.includes(squareNumber) ? "maze.png" : "";
           let display = luckySquares.includes(squareNumber) || squareNumber === this.state.actorLocation ? "block" : "none";
           this.state.squares.push({ element, display, value: squareNumber });
           squareNumber++;
@@ -291,13 +293,13 @@ class Game extends React.Component {
       return {
         valid: false,
         msg: `${input} not valid. 
-        Please enter a valid integer for ${dimension}`
+        Please enter a valid number ${dimension}`
       };
     } else if (output < 0) {
       return {
         valid: false,
         msg: `${input} not valid. 
-          Please enter a positive integer for ${dimension}`
+          Enter a positive number ${dimension}`
       };
     } else {
       return {
